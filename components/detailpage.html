@@ -1,0 +1,72 @@
+<!-- components/detailpage.html -->
+<div class="w-full flex flex-col animate-fade-in">
+    <!-- 頂部細線導覽列 -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-stone-100 sticky top-0 z-40">
+        <div class="max-w-4xl mx-auto px-6 h-20 flex items-center justify-between">
+            <button onclick="navigateTo('homepage')" class="flex items-center text-stone-500 hover:text-stone-900 font-medium text-xs tracking-wider uppercase transition-all group">
+                <i class="fa-solid fa-arrow-left-long mr-2 text-xs group-hover:-translate-x-1 transition-transform"></i> Back
+            </button>
+            
+            <!-- 🟢 修正：將 h2 改為 flex 容器，完美對齊動態載入的 SVG 國旗與國家標題 -->
+            <h2 id="trip-main-title" class="font-serif text-2xl tracking-tight text-stone-900 flex items-center gap-3">
+                Loading...
+            </h2>
+            
+            <div class="w-12"></div>
+        </div>
+    </header>
+
+    <!-- 主功能雙層選單 -->
+    <div class="bg-white border-b border-stone-100 sticky top-20 z-30">
+        <div class="max-w-md mx-auto flex h-14">
+            <button id="menu-btn-itinerary" onclick="switchMenu('itinerary')" class="flex-1 text-center border-b-2 font-bold text-xs tracking-widest uppercase transition-all border-stone-900 text-stone-900">Itinerary</button>
+            <button id="menu-btn-weather" onclick="switchMenu('weather')" class="flex-1 text-center border-b-2 font-medium text-xs tracking-widest uppercase transition-all border-transparent text-stone-400 hover:text-stone-800">Weather</button>
+        </div>
+    </div>
+
+    <!-- 主內容核心渲染區 -->
+    <main class="flex-1 max-w-3xl w-full mx-auto p-6 md:py-12">
+        <!-- 內容 A: 行程區域 -->
+        <div id="content-itinerary" class="block">
+            <div id="days-tabs-container" class="flex gap-3 overflow-x-auto pb-4 mb-8 scrollbar-none px-1"></div>
+            
+            <div class="mb-10 text-center">
+                <span class="text-[10px] font-bold tracking-widest text-stone-400 uppercase block mb-1">ROUTE OVERVIEW</span>
+                <p id="route-summary" class="font-serif text-lg text-stone-600 italic"></p>
+            </div>
+            
+            <div id="attractions-container" class="space-y-6"></div>
+        </div>
+
+        <!-- 內容 B: 天氣中心區域 -->
+        <div id="content-weather" class="hidden space-y-8">
+            <!-- 🟢 新增：天氣城市切換頁籤容器 (完美對齊 Itinerary 視覺細節) -->
+            <div id="weather-tabs-container" class="flex gap-3 overflow-x-auto pb-4 mb-2 scrollbar-none px-1"></div>
+
+            <div class="bg-stone-900 rounded-3xl p-8 text-white shadow-xl flex flex-col justify-between relative overflow-hidden min-h-[220px]">
+                <div class="flex items-start justify-between z-10">
+                    <div>
+                        <span class="text-[10px] font-bold tracking-widest text-stone-400 uppercase block mb-1">LIVE WEATHER ACCESS</span>
+                        <h3 id="weather-city-name" class="font-serif text-3xl font-light">--</h3>
+                    </div>
+                    <div id="weather-icon" class="text-4xl text-stone-300"><i class="fa-solid fa-circle-notch animate-spin"></i></div>
+                </div>
+                <div class="flex items-baseline gap-4 my-auto pt-6 z-10">
+                    <span id="weather-temp" class="text-6xl font-light tracking-tighter">--°C</span>
+                    <span id="weather-desc" class="text-xs font-semibold tracking-widest uppercase bg-white/10 px-3 py-1 rounded-full border border-white/10">Loading...</span>
+                </div>
+                <div class="grid grid-cols-2 gap-4 border-t border-white/10 pt-4 text-xs text-stone-400 z-10">
+                    <div><i class="fa-solid fa-droplet mr-1.5 text-stone-500"></i>Humidity: <span id="weather-humidity">--</span>%</div>
+                    <div><i class="fa-solid fa-wind mr-1.5 text-stone-500"></i>Wind: <span id="weather-wind">--</span> m/s</div>
+                </div>
+            </div>
+            <div class="bg-white border border-stone-200/60 rounded-3xl p-8 shadow-xs">
+                <span class="text-[10px] font-bold tracking-widest text-stone-400 uppercase block mb-4">SEASONAL FEATURES</span>
+                <div id="weather-features-list" class="space-y-4 text-sm text-stone-600 leading-relaxed font-light"></div>
+            </div>
+            <a id="weather-external-btn" href="#" target="_blank" class="block w-full text-center border border-stone-900 text-stone-900 text-xs font-bold tracking-widest uppercase py-4 rounded-xl hover:bg-stone-900 hover:text-white transition-all duration-300">
+                <i class="fa-solid fa-arrow-up-right-from-square mr-2 text-[10px]"></i> Open 7-Day Detailed Forecast
+            </a>
+        </div>
+    </main>
+</div>

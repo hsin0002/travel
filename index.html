@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust | 我的全球旅遊足跡</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    <script src="config.js"></script>
+</head>
+<body class="text-stone-800 antialiased selection:bg-stone-200">
+
+    <div id="app-root" class="min-h-screen flex flex-col justify-between"></div>
+
+    <script>
+        // ==========================================
+        // 全域狀態掌控中心
+        // ==========================================
+        let currentDay = 1;
+        let currentWeatherCity = ""; 
+        let currentMenu = "itinerary"; 
+
+        // ==========================================
+        // 核心多功能路由監聽：記住天數、城市與選單
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', () => {
+            handleHashRoute();
+        });
+
+        window.addEventListener('hashchange', () => {
+            handleHashRoute();
+        });
+
+        function getHashParams() {
+            const hash = window.location.hash.substring(1);
+            if (!hash) return {};
+            return Object.fromEntries(new URLSearchParams(hash).entries());
+        }
+
+        function updateUrlHash() {
+            if (window.currentTripData) {
+                const params = new URLSearchParams();
+                params.set('trip', window.currentTripData.countryKey);
+                params.set('menu', currentMenu);
+                
+                if (currentMenu === 'itinerary') {
+                    params.set('day', currentDay);
+                } else if (currentMenu === 'weather' && currentWeatherCity) {
+                    params.set('city', currentWeatherCity);
+                }
+                
+                window.location.hash = params.toString();
+            } else {
+                window.location.hash = '';
+            }
+        }
+
+        function handleHashRoute() {
+            const params = getHashParams();
+            if (params.trip) {
+                navigateTo('detailpage', params.trip, false); 
+            } else {
+                navigateTo('homepage', null, false);
+            }
+        }
+
+        // ==========================================
+        // 頁面切換與元件異步加載器
+        // ==========================================
+        async function navigateTo(pageType, tripKey = null, updateHash = true) {
+            const root = document.getElementById('app-root');
+            root.innerHTML = `<div class="m-auto text-stone-400 text-xs tracking-widest uppercase animate-pulse"><i class="fa-solid fa-circle-notch animate-spin mr-2"></i>Loading Component...</div>`;
+            
+            try {
+                const response = await fetch(`components/${pageType}.html`);
+                if (!response.ok) throw new Error();
+                const htmlTemplate = await response.text();
+                
+                root.innerHTML = htmlTemplate;
+
+                if (pageType === 'homepage') {
+                    window.currentTripData = null;
+                    if (updateHash) window.location.hash = '';
+                    renderHomepageEngine();
+                } else if (pageType === 'detailpage' && tripKey) {
+                    loadTripDataEngine(tripKey);
+                }
+            } catch (error) {
+                root.innerHTML = `<div class="m-auto text-red-500 text-xs font-mono">Error loading view component.</div>`;
+            }
+        }
+
+        // ==========================================
+        // 首頁資料填補引擎
+        // ==========================================
+        function renderHomepageEngine() {
+            const grid = document.getElementById('countries-grid');
+            if (!grid || !window.globalCountriesList) return;
+            grid.innerHTML = ""; 
+            window.globalCountriesList.forEach(c => {
+                grid.innerHTML += `
+                    <div onclick="navigateTo('detailpage', '${c.key}')" class="group border border-stone-200/60 bg-white p-6 rounded-2xl cursor-pointer hover:border-stone-900 transition-all duration-300 shadow-xs hover:-translate-y-0.5 active:scale-[0.99]">
+                        <div class="flex justify-between items-baseline mb-4">
+                            <img src="${c.emoji}" class="h-6 w-auto object-contain rounded-xs shadow-3xs" alt="flag">
+                            <span class="text-[10px] font-bold tracking-wider text-stone-400 uppercase font-mono">${c.date}</span>
+                        </div>
+                        <h3 class="font-serif text-xl text-stone-900 group-hover:translate-x-1 transition-transform">${c.name}</h3>
+                        <p class="text-xs text-stone-400 mt-1 font-light tracking-wide truncate">${c.towns}</p>
+                    </div>`;
+            });
+        }
+
+        // ==========================================
+        // 內頁資料指令指令碼注入
+        // ==========================================
+        function loadTripDataEngine(tripKey) {
+            const scriptId = 'dynamic-trip-script';
+            const oldScript = document.getElementById(scriptId);
+            if (oldScript) oldScript.remove();
+
+            const script = document.createElement('script');
+            script.id = scriptId;
+            script.src = `trips/${tripKey}.js`;
+            
+            script.onload = function() {
+                if (window.currentTripData) renderDetailPageEngine();
+            };
+            document.head.appendChild(script);
+        }
+
+        // ==========================================
+        // 內頁初始化與多城市天氣控制中心
+        // ==========================================
+        function renderDetailPageEngine() {
+            const data = window.currentTripData;
+            const params = getHashParams(); 
+            
+            document.getElementById('trip-main-title').innerHTML = `
+                <img src="${data.emoji}" class="h-6 w-auto object-contain rounded-xs shadow-3xs" alt="flag">
+                <span>${data.title}</span>
+            `;
+            
+            document.getElementById('weather-external-btn').href = data.weatherExternalLink;
+
+            const featureBox = document.getElementById('weather-features-list');
+            featureBox.innerHTML = "";
+            data.weatherFeatures.forEach(f => {
+                featureBox.innerHTML += `<p class="flex items-start gap-3 font-light"><span class="text-stone-900 font-bold">—</span><span>${f}</span></p>`;
+            });
+
+            currentMenu = params.menu || "itinerary";
+
+            // 天氣城市多地點切換頁籤生成
+            const weatherTabsContainer = document.getElementById('weather-tabs-container');
+            if (weatherTabsContainer) {
+                weatherTabsContainer.innerHTML = "";
+                const cities = data.weatherLocation.split('/').map(c => c.trim());
+                
+                currentWeatherCity = (params.city && cities.includes(params.city)) ? params.city : cities[0]; 
+
+                const cityNameEl = document.getElementById('weather-city-name');
+                if (cityNameEl) cityNameEl.innerText = currentWeatherCity;
+
+                cities.forEach((city) => {
+                    const btn = document.createElement('button');
+                    btn.id = `tab-weather-${encodeURIComponent(city)}`;
+                    btn.onclick = () => switchWeatherCity(city);
+                    btn.className = city === currentWeatherCity 
+                        ? "px-4 py-2 rounded-xl bg-stone-950 text-white font-bold text-xs tracking-wider uppercase shrink-0 transition-all shadow-xs"
+                        : "px-4 py-2 rounded-xl bg-white text-stone-500 border border-stone-200/60 font-medium text-xs tracking-wider uppercase shrink-0 hover:bg-stone-50 transition-all";
+                    btn.innerText = city;
+                    weatherTabsContainer.appendChild(btn);
+                });
+
+                weatherTabsContainer.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    weatherTabsContainer.scrollLeft += e.deltaY;
+                }, { passive: false });
+            }
+
+            // 日期頁籤生成
+            const tabsContainer = document.getElementById('days-tabs-container');
+            tabsContainer.innerHTML = "";
+            const daysKeys = Object.keys(data.days);
+            
+            currentDay = (params.day && daysKeys.includes(params.day)) ? params.day : (daysKeys[0] || 1);
+            
+            daysKeys.forEach((dayNum) => {
+                const btn = document.createElement('button');
+                btn.id = `tab-day${dayNum}`;
+                btn.onclick = () => switchDay(dayNum);
+                btn.className = dayNum == currentDay 
+                    ? "px-5 py-2.5 rounded-xl bg-stone-950 text-white font-bold text-xs tracking-wider uppercase shrink-0 transition-all shadow-xs"
+                    : "px-5 py-2.5 rounded-xl bg-white text-stone-500 border border-stone-200/60 font-medium text-xs tracking-wider uppercase shrink-0 hover:bg-stone-50 transition-all";
+                btn.innerText = `Day ${dayNum} (${data.days[dayNum].date})`;
+                tabsContainer.appendChild(btn);
+            });
+
+            tabsContainer.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                tabsContainer.scrollLeft += e.deltaY;
+            }, { passive: false });
+
+            switchMenu(currentMenu, false);
+            
+            setTimeout(() => {
+                const activeDayTab = document.getElementById(`tab-day${currentDay}`);
+                if (activeDayTab) activeDayTab.click();
+                const activeWeatherTab = document.getElementById(`tab-weather-${encodeURIComponent(currentWeatherCity)}`);
+                if (activeWeatherTab) {
+                    if(currentMenu === 'weather') switchWeatherCity(currentWeatherCity);
+                    else fetchLiveWeather(currentWeatherCity);
+                }
+            }, 100);
+        }
+
+        function switchMenu(menu, updateHash = true) {
+            currentMenu = menu;
+            const itiContent = document.getElementById('content-itinerary');
+            const wetContent = document.getElementById('content-weather');
+            const itiBtn = document.getElementById('menu-btn-itinerary');
+            const wetBtn = document.getElementById('menu-btn-weather');
+            if(!itiContent || !wetContent) return;
+            
+            if(menu === 'itinerary') {
+                itiContent.classList.replace('hidden', 'block'); wetContent.classList.replace('block', 'hidden');
+                itiBtn.className = "flex-1 text-center border-b-2 font-bold text-xs tracking-widest uppercase transition-all border-stone-900 text-stone-900";
+                wetBtn.className = "flex-1 text-center border-b-2 font-medium text-xs tracking-widest uppercase transition-all border-transparent text-stone-400 hover:text-stone-800";
+                renderDay(currentDay);
+            } else {
+                itiContent.classList.replace('block', 'hidden'); wetContent.classList.replace('hidden', 'block');
+                itiBtn.className = "flex-1 text-center border-b-2 font-medium text-xs tracking-widest uppercase transition-all border-transparent text-stone-400 hover:text-stone-800";
+                wetBtn.className = "flex-1 text-center border-b-2 font-bold text-xs tracking-widest uppercase transition-all border-stone-900 text-stone-900";
+            }
+
+            if(updateHash) updateUrlHash();
+        }
+
+        function switchDay(dayNum) {
+            const oldTab = document.getElementById(`tab-day${currentDay}`);
+            if(oldTab) oldTab.className = "px-5 py-2.5 rounded-xl bg-white text-stone-500 border border-stone-200/60 font-medium text-xs tracking-wider uppercase shrink-0 hover:bg-stone-50 transition-all";
+            
+            currentDay = dayNum;
+            const activeTab = document.getElementById(`tab-day${currentDay}`);
+            if(activeTab) activeTab.className = "px-5 py-2.5 rounded-xl bg-stone-950 text-white font-bold text-xs tracking-wider uppercase shrink-0 transition-all shadow-xs";
+            
+            const container = document.getElementById('days-tabs-container');
+            if(container && activeTab) {
+                const containerRect = container.getBoundingClientRect();
+                const activeTabRect = activeTab.getBoundingClientRect();
+                const activeTabCenter = activeTabRect.left + (activeTabRect.width / 2);
+                const containerCenter = containerRect.left + (containerRect.width / 2);
+                const decorationOffset = activeTabCenter - containerCenter;
+                container.scrollTo({ left: container.scrollLeft + decorationOffset, behavior: 'smooth' });
+            }
+            
+            const summaryEl = document.getElementById('route-summary');
+            if(summaryEl && window.currentTripData.days[dayNum]) summaryEl.innerText = window.currentTripData.days[dayNum].route;
+            
+            renderDay(dayNum);
+            updateUrlHash(); 
+        }
+
+        function switchWeatherCity(city) {
+            const oldTab = document.getElementById(`tab-weather-${encodeURIComponent(currentWeatherCity)}`);
+            if (oldTab) oldTab.className = "px-4 py-2 rounded-xl bg-white text-stone-500 border border-stone-200/60 font-medium text-xs tracking-wider uppercase shrink-0 hover:bg-stone-50 transition-all";
+            
+            currentWeatherCity = city;
+            const activeTab = document.getElementById(`tab-weather-${encodeURIComponent(currentWeatherCity)}`);
+            if (activeTab) activeTab.className = "px-4 py-2 rounded-xl bg-stone-950 text-white font-bold text-xs tracking-wider uppercase shrink-0 transition-all shadow-xs";
+            
+            const container = document.getElementById('weather-tabs-container');
+            if(container && activeTab) {
+                const containerRect = container.getBoundingClientRect();
+                const activeTabRect = activeTab.getBoundingClientRect();
+                const activeTabCenter = activeTabRect.left + (activeTabRect.width / 2);
+                const containerCenter = containerRect.left + (containerRect.width / 2);
+                const decorationOffset = activeTabCenter - containerCenter;
+                container.scrollTo({ left: container.scrollLeft + decorationOffset, behavior: 'smooth' });
+            }
+            
+            const cityNameEl = document.getElementById('weather-city-name');
+            if(cityNameEl) cityNameEl.innerText = city;
+            
+            fetchLiveWeather(city);
+            updateUrlHash(); 
+        }
+
+        // ==========================================
+        // 核心多型卡片渲染器
+        // ==========================================
+        function renderDay(dayNum) {
+            const container = document.getElementById('attractions-container');
+            if(!container) return; container.innerHTML = "";
+            const currentTrip = window.currentTripData;
+            let cards = currentTrip.days[dayNum].cards || [];
+
+            cards.sort((a, b) => {
+                if (a.type === 'accommodation') return 1;
+                if (b.type === 'accommodation') return -1;
+                return 0;
+            });
+
+            cards.forEach((card, index) => {
+                const cardDiv = document.createElement('div');
+                cardDiv.className = "bg-white border border-stone-200/60 rounded-2xl shadow-xs p-5 md:p-6 transition-all duration-300 hover:shadow-md animate-fade-in";
+                
+                let originalName = card.name || card.title;
+                let displayName = (card.hasReservation && card.time) ? `[${card.time}] ${originalName}` : originalName;
+
+                const cleanFileName = encodeURIComponent(originalName.replace(/[\/\\:*?"<>|]/g, ""));
+                const basePath = `images/${currentTrip.countryKey}/${cleanFileName}`;
+                
+                let badgeHtml = "", titleHtml = `<h4 class="font-serif text-lg md:text-xl text-stone-900">${displayName}</h4>`, bodyHtml = "";
+                
+                // 智慧手機雙模（點擊+觸控觸發）高靈敏按鈕
+                let actionBtnHtml = `
+                    <button 
+                        onclick="toggleDetails(${index}, this)" 
+                        ontouchstart="toggleDetails(${index}, this)" 
+                        class="mt-4 text-xs font-bold tracking-wider uppercase text-stone-900 hover:text-stone-500 active:text-stone-500 active:scale-95 flex items-center cursor-pointer transition-all touch-manipulation select-none py-2 pr-4"
+                    >
+                        <span>See more...</span>
+                        <i class="fa-solid fa-chevron-down ml-1 text-[9px] transition-transform duration-300"></i>
+                    </button>`;
+                
+                const thumbImgHtml = `<img src="${basePath}.jpg" onerror="this.style.display='none'; this.nextElementSibling.style.paddingRight='0'" class="w-16 h-16 object-cover rounded-xl shrink-0 border border-stone-100 shadow-2xs" alt="thumb">`;
+
+                let reservationBadgeHtml = "";
+                if (card.hasReservation) {
+                    let resIcon = "fa-ticket";
+                    if (card.type === "restaurant") resIcon = "fa-calendar-check";
+                    if (card.type === "transportation") resIcon = "fa-circle-check";
+                    
+                    reservationBadgeHtml = `
+                        <div class="text-center shrink-0 flex flex-col items-center justify-center">
+                            <span class="text-[9px] font-bold bg-amber-100 text-amber-950 px-2 py-0.5 rounded-sm uppercase tracking-wider inline-flex items-center gap-1">
+                                <i class="fa-solid ${resIcon}"></i> Booked
+                            </span>
+                            ${card.time ? `<span class="text-[10px] font-mono text-stone-400 mt-1 font-bold block text-center leading-none">${card.time}</span>` : ""}
+                        </div>`;
+                }
+
+                let cardReminderHtml = "";
+                if (card.reminders && card.reminders.trim() !== "") {
+                    cardReminderHtml = `
+                        <div class="bg-amber-50/60 border border-amber-200/60 rounded-xl p-4 text-xs text-amber-950 font-light leading-relaxed shadow-3xs my-2 w-full whitespace-pre-line">
+                            <strong class="font-bold block mb-1 uppercase tracking-wide"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Important Reminders:</strong>
+                            ${card.reminders}
+                        </div>`;
+                }
+
+                switch(card.type) {
+                    case "introduction":
+                        cardDiv.className += " border-l-4 border-l-stone-900 bg-stone-50/40";
+                        badgeHtml = `<span class="text-[9px] font-bold tracking-widest text-stone-500 bg-stone-200/60 px-2 py-0.5 rounded-sm uppercase mb-2 inline-block"><i class="fa-solid fa-star mr-1"></i>Today Overview</span>`;
+                        // 🟢 修正點：將 introduction 內容也包進 collapse-content 中使其支援折疊與 See More 按鈕
+                        bodyHtml = `
+                            <div id="details-${index}" class="collapse-content w-full">
+                                <div class="collapse-inner pt-2 border-t border-stone-100 mt-2">
+                                    <p class="text-stone-600 text-sm leading-relaxed font-light mb-4 whitespace-pre-line">${card.desc}</p>
+                                    ${cardReminderHtml}
+                                </div>
+                            </div>`;
+                        break;
+                        
+                    case "transportation":
+                        let transIcon = card.subtype === "train" ? "fa-train" : card.subtype === "airplane" ? "fa-plane" : card.subtype === "cruise" ? "fa-ship" : "fa-van-shuttle";
+                        badgeHtml = `<div class="flex justify-between items-center w-full mb-2"><span class="text-[9px] font-bold tracking-widest text-blue-600 bg-blue-50 px-2 py-0.5 rounded-sm uppercase"><i class="fa-solid ${transIcon} mr-1"></i>${card.company || 'Transport'}</span></div>`;
+                        bodyHtml = `
+                            <div id="details-${index}" class="collapse-content">
+                                <div class="collapse-inner pt-4 border-t border-stone-100 mt-4 space-y-3 text-sm text-stone-600 font-light">
+                                    ${cardReminderHtml}
+                                    <p class="whitespace-pre-line">${card.desc}</p>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs pt-1">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(card.depStation)}" target="_blank" class="p-3 border border-stone-100 bg-stone-50/50 rounded-xl hover:border-stone-400 block transition-all">
+                                            <span class="text-stone-400 uppercase block text-[9px] font-bold tracking-wide mb-0.5">DEPART STATION</span>
+                                            <span class="text-stone-800 font-medium">${card.depStation} <i class="fa-solid fa-map-location-dot ml-1 text-stone-400"></i></span>
+                                        </a>
+                                        <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(card.arrStation)}" target="_blank" class="p-3 border border-stone-100 bg-stone-50/50 rounded-xl hover:border-stone-400 block transition-all">
+                                            <span class="text-stone-400 uppercase block text-[9px] font-bold tracking-wide mb-0.5">ARRIVE STATION</span>
+                                            <span class="text-stone-800 font-medium">${card.arrStation} <i class="fa-solid fa-map-location-dot ml-1 text-stone-400"></i></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>`;
+                        break;
+                        
+                    case "accommodation":
+                        badgeHtml = `<span class="text-[9px] font-bold tracking-widest text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-sm uppercase mb-2 inline-block"><i class="fa-solid fa-hotel mr-1"></i>Accommodation</span>`;
+                        
+                        let timeBlock = "";
+                        const hasCheckIn = card.checkIn && card.checkIn.trim() !== "";
+                        const hasCheckOut = card.checkOut && card.checkOut.trim() !== "";
+
+                        if (card.isCheckInDay !== false && (hasCheckIn || hasCheckOut)) {
+                            if (hasCheckIn && hasCheckOut) {
+                                timeBlock = `
+                                    <div class="flex gap-4 text-xs font-mono bg-stone-50/80 p-3 rounded-xl border border-stone-100 w-fit mb-3">
+                                        <div><span class="text-[9px] text-stone-400 block uppercase font-bold tracking-wider mb-0.5">Check-In</span><span class="text-stone-800 font-bold">${card.checkIn}</span></div>
+                                        <div class="border-l border-stone-200 pl-4"><span class="text-[9px] text-stone-400 block uppercase font-bold tracking-wider mb-0.5">Check-Out</span><span class="text-stone-800 font-bold">${card.checkOut}</span></div>
+                                    </div>`;
+                            } else if (hasCheckIn) {
+                                timeBlock = `
+                                    <div class="text-xs font-mono bg-stone-50/80 p-3 rounded-xl border border-stone-100 w-fit mb-3">
+                                        <span class="text-[9px] text-stone-400 block uppercase font-bold tracking-wider mb-0.5">Check-In</span><span class="text-stone-800 font-bold">${card.checkIn}</span>
+                                    </div>`;
+                            } else if (hasCheckOut) {
+                                timeBlock = `
+                                    <div class="text-xs font-mono bg-stone-50/80 p-3 rounded-xl border border-stone-100 w-fit mb-3">
+                                        <span class="text-[9px] text-stone-400 block uppercase font-bold tracking-wider mb-0.5">Check-Out</span><span class="text-stone-800 font-bold">${card.checkOut}</span>
+                                    </div>`;
+                            }
+                        }
+
+                        bodyHtml = `
+                            <div id="details-${index}" class="collapse-content border-stone-100 w-full">
+                                <div class="collapse-inner pt-4 border-t border-stone-100 mt-4 space-y-3 text-sm text-stone-600 font-light">
+                                    ${cardReminderHtml}
+                                    ${timeBlock}
+                                    <p class="whitespace-pre-line">${card.desc}</p>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(card.mapQuery)}" target="_blank" class="mt-2 inline-flex items-center text-xs font-bold text-stone-900 border-b border-stone-900 pb-0.5 hover:text-stone-500 hover:border-stone-500 transition-all"><i class="fa-solid fa-map-location-dot mr-1.5"></i>Open Location on Map</a>
+                                </div>
+                            </div>`;
+                        break;
+                        
+                    case "restaurant":
+                        badgeHtml = `<div class="flex justify-between items-center w-full mb-2"><span class="text-[9px] font-bold tracking-widest text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-sm uppercase"><i class="fa-solid fa-utensils mr-1"></i>Restaurant (${card.mealPeriod || 'Meal'})</span></div>`;
+                        bodyHtml = generateDetailsBlock(index, card, basePath, cardReminderHtml);
+                        break;
+
+                    case "attraction":
+                        badgeHtml = `<div class="flex justify-between items-center w-full mb-2"><span class="text-[9px] font-bold tracking-widest text-amber-700 bg-amber-50 px-2 py-0.5 rounded-sm uppercase"><i class="fa-solid fa-landmark mr-1"></i>Must-Visit Attraction</span></div>`;
+                        bodyHtml = generateDetailsBlock(index, card, basePath, cardReminderHtml);
+                        break;
+
+                    default:
+                        badgeHtml = `<div class="flex justify-between items-center w-full mb-2"><span class="text-[9px] font-bold tracking-widest text-stone-400 bg-stone-100 px-2 py-0.5 rounded-sm uppercase"><i class="fa-solid fa-clock mr-1"></i>${card.type.toUpperCase()}</span></div>`;
+                        bodyHtml = generateDetailsBlock(index, card, basePath, cardReminderHtml);
+                        break;
+                }
+
+                cardDiv.innerHTML = `
+                    <div class="flex flex-col items-start w-full">
+                        ${badgeHtml}
+                        <div class="flex items-center justify-between w-full gap-4 mt-2 mb-1">
+                            <div class="flex-1 min-w-0">
+                                ${titleHtml}
+                            </div>
+                            <div class="flex items-center gap-3 shrink-0">
+                                ${reservationBadgeHtml}
+                                ${card.type !== "introduction" && card.type !== "transportation" ? thumbImgHtml : ""}
+                            </div>
+                        </div>
+                        ${bodyHtml}
+                        ${actionBtnHtml}
+                    </div>
+                `;
+                container.appendChild(cardDiv);
+            });
+        }
+
+        function generateDetailsBlock(index, card, basePath, reminderHtml) {
+            let bigImagesHtml = `<div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4"><img src="${basePath}.jpg" onerror="this.style.display='none'" class="w-full h-44 object-cover rounded-xl filter grayscale hover:grayscale-0 transition-all duration-500 shadow-xs" alt="Main"><img src="${basePath}_1.jpg" onerror="this.style.display='none'" class="w-full h-44 object-cover rounded-xl filter grayscale hover:grayscale-0 transition-all duration-500 shadow-xs" alt="Sub1"><img src="${basePath}_2.jpg" onerror="this.style.display='none'" class="w-full h-44 object-cover rounded-xl filter grayscale hover:grayscale-0 transition-all duration-500 shadow-xs" alt="Sub2"></div>`;
+            return `<div id="details-${index}" class="collapse-content w-full"><div class="collapse-inner pt-4 border-t border-stone-100 mt-4">${reminderHtml}<p class="text-stone-600 text-sm leading-relaxed font-light whitespace-pre-line">${card.desc}</p>${bigImagesHtml}<div class="mt-4 pt-1"><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(card.mapQuery)}" target="_blank" class="inline-flex items-center text-xs font-bold text-stone-900 border-b border-stone-900 pb-0.5 hover:text-stone-500 hover:border-stone-500 transition-all"><i class="fa-solid fa-location-arrow mr-1.5 text-[9px]"></i>Direct via Google Map</a></div></div></div>`;
+        }
+
+        function toggleDetails(index, btn) {
+            const detailPanel = document.getElementById(`details-${index}`);
+            const icon = btn.querySelector('i'); const span = btn.querySelector('span');
+            if(!detailPanel.classList.contains('show')) {
+                detailPanel.classList.add('show'); span.innerText = "See less"; icon.style.transform = "rotate(180deg)";
+            } else {
+                detailPanel.classList.remove('show'); span.innerText = "See more..."; icon.style.transform = "rotate(0deg)";
+            }
+        }
+
+        async function fetchLiveWeather(location) {
+            try {
+                const response = await fetch(`https://wttr.in/${location}?format=j1`);
+                const data = await response.json(); const current = data.current_condition[0];
+                document.getElementById('weather-temp').innerText = `${current.temp_C}°C`;
+                document.getElementById('weather-desc').innerText = current.lang_zh ? current.lang_zh[0].value : current.weatherDesc[0].value;
+                document.getElementById('weather-humidity').innerText = current.humidity;
+                document.getElementById('weather-wind').innerText = (parseFloat(current.windspeedKmph) / 3.6).toFixed(1);
+                const code = current.weatherCode; let iconHtml = '<i class="fa-solid fa-cloud"></i>';
+                if (["113"].includes(code)) iconHtml = '<i class="fa-solid fa-sun text-amber-400"></i>';
+                if (["116"].includes(code)) iconHtml = '<i class="fa-solid fa-cloud-sun text-stone-400"></i>';
+                if (["296", "299", "302", "305", "308", "353", "356"].includes(code)) iconHtml = '<i class="fa-solid fa-cloud-showers-heavy text-sky-400"></i>';
+                document.getElementById('weather-icon').innerHTML = iconHtml;
+            } catch {
+                document.getElementById('weather-desc').innerText = "Offline";
+            }
+        }
+    </script>
+</body>
+</html>
