@@ -8,7 +8,7 @@ window.globalCountriesList = [
     { key: "iceland", name: "冰島", date: "9/23 - 10/3", towns: "Whole island & north-west fjords", emoji: "https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f1ee-1f1f8.svg" },
     { key: "scotland", name: "蘇格蘭", date: "10/3 - 10/13", towns: "Glasgow, Skye, Edinburgh...", emoji: "https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f3f4-e0067-e0062-e0073-e0063-e0074-e007f.svg" },
     { key: "ireland", name: "愛爾蘭", date: "10/13 - 10/21", towns: "Wild Atlantic Way", emoji: "https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f1ee-1f1ea.svg" },
-    //{ key: "italy", name: "義大利", date: "10/21 - 11/6", towns: "Venice, Milan, Florence, Rome...", emoji: "https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f1ee-1f1f9.svg" },
-    //{ key: "france", name: "法國", date: "11/6 - 11/25", towns: "Paris, Nice, Marseille, Belfort...", emoji: "https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f1eb-1f1f7.svg" },
+    { key: "italy", name: "義大利", date: "10/21 - 11/6", towns: "Venice, Milan, Florence, Rome...", emoji: "https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f1ee-1f1f9.svg" },
+    { key: "france", name: "法國", date: "11/6 - 11/25", towns: "Paris, Nice, Marseille, Belfort...", emoji: "https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f1eb-1f1f7.svg" },
     { key: "hokkaido", name: "北海道", date: "12/2 - 12/15", towns: "Sapporo, Hakodate", emoji: "https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f1ef-1f1f5.svg" }
 ];

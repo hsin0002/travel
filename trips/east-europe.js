@@ -5,7 +5,7 @@ window.currentTripData = {
   "emoji": "https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f1ea-1f1fa.svg",
   "dateRange": "08/13 - 08/28",
   "weatherLocation": "Prague / Kraków / Budapest / Bratislava / Vienna / Brno",
-    "weatherExternalLink": "https://www.yr.no/",
+    "weatherExternalLink": "https://www.accuweather.com/en/search-locations?query=",
     "weatherFeatures": [
       "8月中下旬的中東歐氣候正值夏末秋初，白天氣溫溫暖舒適（約 20°C - 26°C），體感非常適合徒步旅遊。",
       "各城市氣候略有差異：布拉格與克拉科夫早晚偏涼，布達佩斯因多瑙河河岸地帶風速較大，入夜後氣溫下降較快，建議準備薄外套。"
