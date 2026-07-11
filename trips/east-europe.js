@@ -1,15 +1,14 @@
-// trips/east-europe.js
 window.currentTripData = {
   "countryKey": "east-europe",
   "title": "東歐：捷克、波蘭、匈牙利、斯洛伐克、奧地利",
   "emoji": "https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f1ea-1f1fa.svg",
   "dateRange": "08/13 - 08/28",
   "weatherLocation": "Prague / Kraków / Budapest / Bratislava / Vienna / Brno",
-    "weatherExternalLink": "https://www.accuweather.com/en/search-locations?query=",
-    "weatherFeatures": [
-      "8月中下旬的中東歐氣候正值夏末秋初，白天氣溫溫暖舒適（約 20°C - 26°C），體感非常適合徒步旅遊。",
-      "各城市氣候略有差異：布拉格與克拉科夫早晚偏涼，布達佩斯因多瑙河河岸地帶風速較大，入夜後氣溫下降較快，建議準備薄外套。"
-    ],
+  "weatherExternalLink": "https://www.accuweather.com/en/search-locations?query=",
+  "weatherFeatures": [
+    "8月中下旬的中東歐氣候正值夏末秋初，白天氣溫溫暖舒適（約 20°C - 26°C），體感非常適合徒步旅遊。",
+    "各城市氣候略有差異：布拉格與克拉科夫早晚偏涼，布達佩斯因多瑙河河岸地帶風速較大，入夜後氣溫下降較快，建議準備薄外套。"
+  ],
   "days": {
     "1": {
       "date": "08/13",
@@ -61,6 +60,18 @@ window.currentTripData = {
         },
         {
           "type": "recommendation",
+          "title": "Old Town Square & Astronomical Clock 老城廣場與天文鐘",
+          "desc": "布拉格的歷史中心，整點可觀賞天文鐘報時，感受濃厚的中世紀浪漫氛圍，是抵達布拉格後首選的散步起點。",
+          "mapQuery": "Old Town Square Prague"
+        },
+        {
+          "type": "recommendation",
+          "title": "Charles Bridge 查理大橋",
+          "desc": "橫跨伏爾塔瓦河的歷史名橋，橋上兩側矗立著30座雕像，黃昏或清晨漫步極具詩意。",
+          "mapQuery": "Charles Bridge"
+        },
+        {
+          "type": "recommendation",
           "title": "逛市區與超市煮晚餐",
           "isOptional": true,
           "desc": "抵達後可在公寓附近適應環境，前往當地超市採買食材煮晚餐。",
@@ -95,11 +106,17 @@ window.currentTripData = {
           "mapQuery": "Prague+Na+Knizeci"
         },
         {
+          "type": "recommendation",
+          "title": "Český Krumlov Castle 庫倫洛夫城堡",
+          "desc": "捷克第二大城堡，擁有絕美的彩繪塔 (Zámecká věž)，登塔可俯瞰被伏爾塔瓦河環繞的童話般紅屋頂小鎮。",
+          "mapQuery": "State Castle and Chateau Cesky Krumlov"
+        },
+        {
           "type": "restaurant",
           "title": "地窖餐廳午餐 (Krčma Šatlava)",
           "time": "11:00",
           "hasReservation": false,
-          "desc": "11:00 Krčma Šatlava，考慮吃這家。",
+          "desc": "11:00 Krčma Šatlava，考慮吃這家。提供道地的捷克烤豬腳與黑啤酒。",
           "mapQuery": "Krcma+Satlava"
         },
         {
@@ -137,12 +154,16 @@ window.currentTripData = {
           "mapQuery": "Prague+Castle"
         },
         {
+          "type": "recommendation",
+          "title": "St. Vitus Cathedral 聖維特大教堂",
+          "desc": "位於城堡區內，哥德式建築的極致代表，內有慕夏 (Mucha) 親手繪製的彩色玻璃花窗，令人歎為觀止。",
+          "mapQuery": "St. Vitus Cathedral"
+        },
+        {
           "type": "transportation",
           "title": "跨國夜車：České dráhy (Prague - Krakow)",
           "time": "22:16 - 07:22",
-          "desc": `EN 50443 Slovakia 
-                   carriage: 343, couchette: 61-66. 
-                   22:16 Praha hl.n. → 07:22 Krakow Glowny`,
+          "desc": "EN 50443 Slovakia \ncarriage: 343, couchette: 61-66. \n22:16 Praha hl.n. → 07:22 Krakow Glowny",
           "hasReservation": true,
           "reminders": "提前至少30分鐘到車站",
           "depStation": "Praha hl.n.",
@@ -182,9 +203,7 @@ window.currentTripData = {
           "title": "Sztolnia Wieliczka 鹽礦",
           "time": "14:00",
           "hasReservation": true,
-          "desc": `Tourist Route - Individual tour (3h)。
-                   Language: English。
-                   開始前15分鐘要到。`,
+          "desc": "Tourist Route - Individual tour (3h)。\nLanguage: English。\n開始前15分鐘要到。",
           "mapQuery": "Sztolnia+Wieliczka",
           "reminders": "帶護照學生證！！！"
         },
@@ -232,25 +251,39 @@ window.currentTripData = {
         {
           "type": "introduction",
           "title": "Day 7 | 克拉科夫老城探索與跨國夜車",
-          "desc": "今日白天全天走訪克拉科夫市區景點。深夜搭乘跨國火車前往匈牙利布達佩斯。",
+          "desc": "今日白天全天走訪克拉科夫老城區，探訪歐洲最大的中世紀廣場與周邊歷史建築。深夜搭乘跨國火車前往匈牙利布達佩斯。",
           "reminders": "夜車出發時間為 20:57，請注意退房期限為 11:00。"
         },
         {
           "type": "recommendation",
-          "title": "推薦遊覽：逛市區與老城景點",
-          "isOptional": true,
-          "desc": "可彈性安排造訪：紡織會館、市政廳鐘樓 Town Hall Tower、瓦維爾城堡區、卡齊米日猶太區、辛德勒工廠 Oskar Schindler's Enamel Factory。",
-          "mapQuery": "Krakow+Old+Town"
+          "title": "Main Square & Cloth Hall 克拉科夫中央廣場與紡織會館",
+          "desc": "歐洲最大的中世紀老城廣場。位於中央的紡織會館曾是國際貿易中心，現在一樓是玲瑯滿目的傳統手工藝品市集，二樓則是博物館。",
+          "mapQuery": "Krakow Main Square"
+        },
+        {
+          "type": "recommendation",
+          "title": "St. Mary's Basilica 聖母聖殿",
+          "desc": "老城廣場旁顯目的不對稱雙塔教堂。每到整點，塔頂會吹響哀傷的傳統小號號角聲（Hejnał Mariacki）以紀念當年抵禦蒙古襲擊的號手。",
+          "mapQuery": "St. Mary's Basilica Krakow"
+        },
+        {
+          "type": "recommendation",
+          "title": "Wawel Royal Castle 瓦維爾皇家城堡",
+          "desc": "坐落在維斯瓦河畔的山丘上，是波蘭昔日繁榮時期的王室居所，建築融合了羅曼式、哥德式與文藝復興風格，極具歷史象徵意義。",
+          "mapQuery": "Wawel Royal Castle"
+        },
+        {
+          "type": "recommendation",
+          "title": "Kazimierz 舊猶太區卡齊米日",
+          "desc": "歷史上猶太文化的交匯之地，也是電影《辛德勒的名單》拍攝地。現今融合了歷史遺跡與現代文青咖啡館、酒吧，充滿復古獨特氣息。",
+          "mapQuery": "Kazimierz Krakow"
         },
         {
           "type": "transportation",
           "title": "跨國夜車：PKP Intercity (Krakow - Budapest)",
           "time": "20:57 - 08:29",
           "hasReservation": true,
-          "desc": `417 Carpathia. 
-                   1. Car351 Seat 22, 24, 26
-                   2. Car351 Seat 42, 44, 46. 20:57 
-                   Krakow Gł. → 08:29 Budapest Nyugati。`,
+          "desc": "417 Carpathia. \n1. Car351 Seat 22, 24, 26\n2. Car351 Seat 42, 44, 46. 20:57 \nKrakow Gł. → 08:29 Budapest Nyugati。",
           "reminders": "提前至少30分鐘到車站",
           "depStation": "Krakow Gl.",
           "depMapQuery": "Krakow+Glowny",
@@ -286,9 +319,33 @@ window.currentTripData = {
         },
         {
           "type": "recommendation",
-          "title": "推薦遊覽：佩斯區美食與市集",
+          "title": "St. Stephen's Basilica 聖伊什特萬聖殿",
+          "desc": "佩斯區宏偉的新古典主義天主教堂，內部供奉著匈牙利開國國王聖伊什特萬的「神聖右手」。可登頂俯瞰布達佩斯 360 度市景。",
+          "mapQuery": "St. Stephen's Basilica Budapest"
+        },
+        {
+          "type": "recommendation",
+          "title": "Széchenyi Chain Bridge 塞切尼鏈橋",
+          "desc": "橫跨多瑙河、第一座連結布達與佩斯兩城的歷史懸索橋，橋頭兩側守護著雄偉的石獅雕像，是布達佩斯最經典的象徵。",
+          "mapQuery": "Szechenyi Chain Bridge"
+        },
+        {
+          "type": "recommendation",
+          "title": "Shoes on the Danube Bank 多瑙河畔鞋子",
+          "desc": "位於國會大廈不遠處的多瑙河堤，鐵鞋雕塑旨在紀念二戰期間在此被法西斯民兵射擊墜河遇害的猶太人，具有肅穆與歷史反思的意義。",
+          "mapQuery": "Shoes on the Danube Bank"
+        },
+        {
+          "type": "recommendation",
+          "title": "New York Cafe 紐約咖啡館",
+          "desc": "被譽為「世界上最美的咖啡館」。宮廷式的巴洛克奢華內裝，擁有金碧輝煌的雕刻柱與天頂壁畫，即便排隊也值得一訪。",
+          "mapQuery": "New York Cafe Budapest"
+        },
+        {
+          "type": "recommendation",
+          "title": "推薦美食：Best Bagel Basilica",
           "isOptional": true,
-          "desc": "走訪多瑙河畔市集，推薦品嚐 Best Bagel Basilica。下午可挑選中央咖啡館或紐約咖啡館享受悠閒時光。",
+          "desc": "教堂周邊極受歡迎的人氣貝果店，適合散步中途作為美味的午餐或點心選擇。",
           "mapQuery": "Best+Bagel+Basilica"
         },
         {
@@ -316,15 +373,38 @@ window.currentTripData = {
         {
           "type": "introduction",
           "title": "Day 9 | 布達區探索與多瑙河遊船",
-          "desc": "今日重點為布達區（Buda）觀光，傍晚登上蓋勒特山欣賞絕美夜景，隨後安排多瑙河遊船行程，晚上回去煮晚餐。",
+          "desc": "今日重點為多瑙河西岸的布達區（Buda）山城觀光，傍晚登上蓋勒特山欣賞絕美夜景，隨後安排多瑙河遊船行程。",
           "reminders": "布達區步行山路較多，建議準備好穿的鞋子。"
         },
         {
           "type": "recommendation",
-          "title": "推薦遊覽：布達城堡區精華",
-          "isOptional": true,
-          "desc": "上午建議拜訪漁人堡 (Fisherman's Bastion) 與城堡山 (Castle Hill)；下午可至知名甜點店 Ruszwurm Cukrászda 休息，傍晚前往蓋勒特山 (Gellért Hill) 看夜景。",
+          "title": "Fisherman's Bastion 漁人堡",
+          "desc": "宛如迪士尼童話城堡的新哥德式拱廊建築，設有七座尖塔。這裡是俯瞰多瑙河、國會大廈與佩斯區城景的最佳瞭望台。",
           "mapQuery": "Fisherman's+Bastion"
+        },
+        {
+          "type": "recommendation",
+          "title": "Matthias Church 馬加什教堂",
+          "desc": "坐落在漁人堡旁，擁有色彩斑斕的馬賽克拼貼瓷磚屋頂，曾是歷代匈牙利國王加冕之地，建築風格獨特且精緻。",
+          "mapQuery": "Matthias Church"
+        },
+        {
+          "type": "recommendation",
+          "title": "Buda Castle 布達城堡",
+          "desc": "雄偉的皇家宮殿遺跡，現今內部改為國家畫廊與歷史博物館，沿著城堡山平台漫步可居高臨下欣賞鏈橋風光。",
+          "mapQuery": "Buda Castle"
+        },
+        {
+          "type": "recommendation",
+          "title": "Gellért Hill 蓋勒特山夜景",
+          "desc": "俯瞰布達佩斯城市全景與多瑙河沿岸地標的絕佳制高點，當華燈初上，整座城市與橋樑亮起金黃色燈火，景色極具震撼力。",
+          "mapQuery": "Gellert Hill"
+        },
+        {
+          "type": "recommendation",
+          "title": "Ruszwurm Cukrászda 百年甜點店",
+          "desc": "布達城堡區歷史最悠久的蛋糕店，自1827年開業至今，推薦品嚐經典的 Ruszwurm 鮮奶油蛋糕，歇歇腳體驗歐式古老風情。",
+          "mapQuery": "Ruszwurm Cukraszda"
         },
         {
           "type": "night",
@@ -374,8 +454,8 @@ window.currentTripData = {
       "cards": [
         {
           "type": "introduction",
-          "title": "Day 11 | 匈牙利國會大廈導覽與佩斯深度遊",
-          "desc": "上午 10:00 安排已預訂的國會大廈導覽行程。下午可彈性走訪中央市場與周邊歷史建築，晚餐安排在 Retek Bistro 用餐。",
+          "title": "Day 11 | 匈牙利國會大廈導覽與佩斯老城深度遊",
+          "desc": "上午 10:00 安排已預訂的國會大廈導覽行程。下午深度走訪佩斯老城區的百年市場與猶太文化地標，晚餐安排在 Retek Bistro 用餐。",
           "reminders": "國會大廈導覽務必攜帶護照與學生證！！！晚餐考慮吃 Retek Bistro。"
         },
         {
@@ -389,10 +469,27 @@ window.currentTripData = {
         },
         {
           "type": "recommendation",
-          "title": "推薦遊覽：佩斯老城與經典美食",
-          "isOptional": true,
-          "desc": "參觀完國會大廈後，可順遊：中央市場、聖伊什特萬聖殿與歌劇院、煙草街會堂。午餐或晚餐推薦去匈牙利菜餐廳 Retek Bistro。",
-          "mapQuery": "Central+Market+Hall+Budapest"
+          "title": "Central Market Hall 中央市場",
+          "desc": "佩斯老城最具生活氣息的歷史室內市場。一樓販售各式在地生鮮、鵝肝醬、紅椒粉（Paprika），二樓則有各式匈牙利傳統小吃與手工藝品攤位，是非常適合採買伴手禮的地方。",
+          "mapQuery": "Central Market Hall Budapest"
+        },
+        {
+          "type": "recommendation",
+          "title": "Dohány Street Synagogue 煙草街會堂",
+          "desc": "歐洲第一大、世界第二大的猶太教大會堂。外觀採用獨特的摩爾復興式風格，紅磚外牆搭配精緻雙塔，內部裝飾壯麗且極具文化深度。",
+          "mapQuery": "Dohany Street Synagogue"
+        },
+        {
+          "type": "recommendation",
+          "title": "Hungarian State Opera 匈牙利國家歌劇院",
+          "desc": "新文藝復興風格的建築傑作，內部以奢華的壁畫與吊燈裝飾，音效水準位居歐洲前列，散發著佩斯老城的古典優雅。",
+          "mapQuery": "Hungarian State Opera"
+        },
+        {
+          "type": "restaurant",
+          "title": "Retek Bistro 晚餐推薦",
+          "desc": "主打溫馨、道地的經典匈牙利傳統料理餐廳，能在這裡品嚐到極具代表性的匈牙利牛肉湯（Goulash）。",
+          "mapQuery": "Retek Bistro"
         },
         {
           "type": "accommodation",
@@ -431,6 +528,18 @@ window.currentTripData = {
           "mapQuery": "Bratislava+Old+Town"
         },
         {
+          "type": "recommendation",
+          "title": "Bratislava Castle 布拉提斯拉瓦城堡",
+          "desc": "高聳於多瑙河畔的四方形城堡，造型宛如翻轉的桌子，爬上山丘可俯瞰舊城區與多瑙河的壯麗景色。",
+          "mapQuery": "Bratislava Castle"
+        },
+        {
+          "type": "recommendation",
+          "title": "Čumil (Man at Work) 守望者雕像",
+          "desc": "舊城區最著名的趣味地標之一，一個從人孔蓋探出頭來的銅像，記得摸摸他的頭頂祈求好運。",
+          "mapQuery": "Cumil Bratislava"
+        },
+        {
           "type": "accommodation",
           "title": "住宿：LAM Schon - AC",
           "checkIn": "16:00",
@@ -447,7 +556,7 @@ window.currentTripData = {
         {
           "type": "introduction",
           "title": "Day 13 | 抵達音樂之都維也納與美泉宮",
-          "desc": "今日上午從布拉提斯拉瓦搭車移動至維也納。下午 15:00 辦理青旅入住後，安排前往美泉宮觀光。",
+          "desc": "今日上午從布拉提斯拉瓦搭車移動至維也納. 下午 15:00 辦理青旅入住後，安排前往美泉宮觀光。",
           "reminders": "維也納青旅下午 15:00 後可辦理 Check-in。"
         },
         {
@@ -456,8 +565,7 @@ window.currentTripData = {
           "title": "移動至維也納",
           "time": "10:50 - 11:46",
           "hasReservation": false,
-          "desc": `10:50 Bratislava hl.st. - 11:46 Wien Hbf
-                  出發前幾天或當天訂票即可`,
+          "desc": "10:50 Bratislava hl.st. - 11:46 Wien Hbf\n出發前幾天或當天訂票即可",
           "mapQuery": "Wien+Hbf"
         },
         {
@@ -508,6 +616,12 @@ window.currentTripData = {
           "mapQuery": "Brno+Old+Town"
         },
         {
+          "type": "recommendation",
+          "title": "Cathedral of St. Peter and Paul 聖彼得與聖保羅大教堂",
+          "desc": "布爾諾最醒目的地標，這座壯觀的哥德式雙塔大教堂每天上午11點會提前敲響正午的鐘聲，背後有一段成功抵禦瑞典軍隊的傳奇故事。",
+          "mapQuery": "Cathedral of St. Peter and Paul Brno"
+        },
+        {
           "type": "transportation",
           "title": "跨國快鐵：OBB (Brno - Vienna)",
           "time": "17:18 - 18:49",
@@ -543,6 +657,12 @@ window.currentTripData = {
           "hasReservation": false,
           "desc": "計畫造訪美景宮（Belvedere Palace）朝聖藝術名作。",
           "mapQuery": "Belvedere+Palace"
+        },
+        {
+          "type": "recommendation",
+          "title": "Café Central 中央咖啡館",
+          "desc": "維也納最具代表性的百年咖啡館之一，曾是佛洛伊德等文人雅士的聚會所，推薦來這裡享受下午茶與知名的皇帝煎餅 (Kaiserschmarrn)。",
+          "mapQuery": "Cafe Central Vienna"
         },
         {
           "type": "afternoon",

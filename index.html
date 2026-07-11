@@ -348,9 +348,9 @@
                 let cardReminderHtml = "";
                 if (card.reminders && card.reminders.trim() !== "") {
                     cardReminderHtml = `
-                        <div class="bg-amber-50/60 border border-amber-200/60 rounded-xl p-4 text-xs text-amber-950 font-light leading-relaxed shadow-3xs my-2 w-full whitespace-pre-line">
-                            <strong class="font-bold block mb-1 uppercase tracking-wide"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Important Reminders:</strong>
-                            ${card.reminders}
+                        <div class="bg-amber-50/60 border border-amber-200/60 rounded-xl py-3 px-4 text-xs text-amber-950 font-light leading-relaxed shadow-3xs my-2 w-full h-auto whitespace-pre-line flex flex-col gap-1">
+                            <strong class="font-bold block uppercase tracking-wide"><i class="fa-solid fa-triangle-exclamation mr-1 text-amber-700"></i>Important Reminders:</strong>
+                            <div class="text-amber-900 font-medium">${card.reminders}</div>
                         </div>`;
                 }
 
